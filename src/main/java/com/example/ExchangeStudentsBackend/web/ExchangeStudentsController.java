@@ -1,6 +1,7 @@
 package com.example.ExchangeStudentsBackend.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
@@ -18,6 +19,11 @@ public class ExchangeStudentsController {
 	@RequestMapping(value="/faq", method = RequestMethod.GET)
 	public @ResponseBody List<FAQ> faqListRest(){
 		return (List<FAQ>) faqrepo.findAll();
+	}
+	
+	@RequestMapping(value="/faq/{id}", method = RequestMethod.GET)
+	public @ResponseBody Optional<FAQ> faqRest(@PathVariable("id") Long faqId){
+		return faqrepo.findById(faqId);
 	}
 	
 	@PostMapping("/addfaq")
