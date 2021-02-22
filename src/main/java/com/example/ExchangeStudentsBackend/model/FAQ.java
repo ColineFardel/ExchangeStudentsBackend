@@ -26,7 +26,7 @@ public class FAQ {
 	}
 
 	/**
-	 * Constructor for user to ask a question
+	 * Constructor for student to ask a question
 	 * 
 	 * @param question
 	 * @param status
