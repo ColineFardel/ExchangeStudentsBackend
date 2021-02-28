@@ -18,22 +18,21 @@ public class ExchangeStudentsController {
 	private FAQRepository faqrepo;
 
 	// Get all FAQs
+	// Only for admin users
 	@RequestMapping(value = "/faq", method = RequestMethod.GET)
 	public @ResponseBody List<FAQ> faqListRest() {
 		return (List<FAQ>) faqrepo.findAll();
 	}
 
-	// Get one FAQ
-	// Only for admin users
-	@RequestMapping(value = "/faq/{id}", method = RequestMethod.GET)
-	public @ResponseBody Optional<FAQ> faqRest(@PathVariable("id") Long faqId) {
-		return faqrepo.findById(faqId);
+	// Get answered FAQs
+	@RequestMapping(value = "/answeredfaq", method = RequestMethod.GET)
+	public @ResponseBody List<FAQ> answeredFaqs() {
+		return (List<FAQ>) faqrepo.findByStatus("answered");
 	}
 
 	// Add a new FAQ
 	@PostMapping("/addfaq")
 	public @ResponseBody FAQ newFaq(@RequestBody FAQ newFaq) {
-		// FAQ newFaq = new FAQ(question, "sent");
 		return faqrepo.save(newFaq);
 	}
 
