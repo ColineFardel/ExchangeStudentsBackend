@@ -22,10 +22,11 @@ public class ExchangeStudentsBackendApplication {
 	public CommandLineRunner demo(FAQRepository faqrepo){
 		return(args)->{
 			
-			log.info("save a couple of faq");
-			faqrepo.save(new FAQ("Where do I have to go to make an HSL card?","sent"));
-			faqrepo.save(new FAQ("Question","Answer","answered","#university"));
-			
+			/*
+			 * log.info("save a couple of faq"); faqrepo.save(new
+			 * FAQ("Where do I have to go to make an HSL card?","sent")); faqrepo.save(new
+			 * FAQ("Question","Answer","answered","#university"));
+			 */
 			
 			log.info("fetch all faq");
 			for (FAQ faq : faqrepo.findAll()) {
