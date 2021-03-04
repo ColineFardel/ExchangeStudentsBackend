@@ -7,11 +7,13 @@ import java.util.Optional;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
@@ -107,11 +109,15 @@ public class ExchangeStudentsController {
 	public @ResponseBody List<Image> allImages() {
 		return (List<Image>) imgrepo.findAll();
 	}
-	/*
-	 * @RequestMapping(value = "/img/{name}", method = RequestMethod.GET)
-	 * public @ResponseBody byte[] getImage(@PathVariable("name") String name) {
-	 * List<Image> img = imgrepo.findByName(name); InputStream in=
-	 * img.get(0).getData(); return IOUtils.toByteArray(in); }
-	 */
+
+	@RequestMapping(value = "/img/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+	public @ResponseBody byte[] getImage(@PathVariable("id") Long imgId) {
+		Optional<Image> img = imgrepo.findById(imgId);
+		/*
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/files/")
+				.path(String.valueOf(img.get().getId()))
+				.toUriString();*/
+		return img.get().getData();
+	}
 
 }
