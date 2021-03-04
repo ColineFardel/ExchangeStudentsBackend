@@ -16,20 +16,30 @@ public class Request {
 	private String name;
 	private String description;
 	private String phoneNumber;
+	private String location;
 
 	@Lob
 	private byte[] data;
 
 	public Request() {
 		super();
-	}
-
-	public Request(String name, String description, String phoneNumber, byte[] data) {
+	}	
+	
+	public Request(String name, String description, String phoneNumber, String location, byte[] data) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.phoneNumber = phoneNumber;
+		this.location = location;
 		this.data = data;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	public long getId() {

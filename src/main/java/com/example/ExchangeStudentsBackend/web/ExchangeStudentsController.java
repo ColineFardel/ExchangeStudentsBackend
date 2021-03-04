@@ -1,7 +1,10 @@
 package com.example.ExchangeStudentsBackend.web;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,5 +107,11 @@ public class ExchangeStudentsController {
 	public @ResponseBody List<Image> allImages() {
 		return (List<Image>) imgrepo.findAll();
 	}
+	/*
+	 * @RequestMapping(value = "/img/{name}", method = RequestMethod.GET)
+	 * public @ResponseBody byte[] getImage(@PathVariable("name") String name) {
+	 * List<Image> img = imgrepo.findByName(name); InputStream in=
+	 * img.get(0).getData(); return IOUtils.toByteArray(in); }
+	 */
 
 }
