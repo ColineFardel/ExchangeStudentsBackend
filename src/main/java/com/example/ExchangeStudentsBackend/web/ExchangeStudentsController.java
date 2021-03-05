@@ -1,10 +1,8 @@
 package com.example.ExchangeStudentsBackend.web;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
@@ -81,10 +78,35 @@ public class ExchangeStudentsController {
 		return (List<Request>) requestrepo.findAll();
 	}
 
+	/*
+	 * // Add a new Request
+	 * 
+	 * @PostMapping("/addrequest") public @ResponseBody Request
+	 * newRequest(@RequestBody Request newRequest) { return
+	 * requestrepo.save(newRequest); }
+	 */
+
 	// Add a new Request
 	@PostMapping("/addrequest")
-	public @ResponseBody Request newRequest(@RequestBody Request newRequest) {
-		return requestrepo.save(newRequest);
+	public @ResponseBody Request newRequest(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
+			@RequestParam("desc") String desc, @RequestParam("phoneNumber") String phoneNumber,
+			@RequestParam("location") String location) {
+
+		try {
+			Image img = new Image();
+			img.setName(StringUtils.cleanPath(file.getOriginalFilename()));
+			img.setType(file.getContentType());
+			img.setData(file.getBytes());
+
+			Image savedImg = imgrepo.save(img);
+
+			Request newRequest = new Request(name, desc, phoneNumber, location, savedImg.getId());
+			return requestrepo.save(newRequest);
+
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	@PostMapping("/img")
@@ -114,9 +136,10 @@ public class ExchangeStudentsController {
 	public @ResponseBody byte[] getImage(@PathVariable("id") Long imgId) {
 		Optional<Image> img = imgrepo.findById(imgId);
 		/*
-		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/files/")
-				.path(String.valueOf(img.get().getId()))
-				.toUriString();*/
+		 * String fileDownloadUri =
+		 * ServletUriComponentsBuilder.fromCurrentContextPath().path("/files/")
+		 * .path(String.valueOf(img.get().getId())) .toUriString();
+		 */
 		return img.get().getData();
 	}
 

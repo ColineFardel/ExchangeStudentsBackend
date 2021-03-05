@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 
 @Entity
 public class Request {
@@ -17,21 +16,19 @@ public class Request {
 	private String description;
 	private String phoneNumber;
 	private String location;
-
-	@Lob
-	private byte[] data;
+	private Long imgId;
 
 	public Request() {
 		super();
-	}	
-	
-	public Request(String name, String description, String phoneNumber, String location, byte[] data) {
+	}
+
+	public Request(String name, String description, String phoneNumber, String location, Long imgId) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.phoneNumber = phoneNumber;
 		this.location = location;
-		this.data = data;
+		this.imgId = imgId;
 	}
 
 	public String getLocation() {
@@ -74,12 +71,12 @@ public class Request {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public byte[] getData() {
-		return data;
+	public Long getImgId() {
+		return imgId;
 	}
 
-	public void setData(byte[] data) {
-		this.data = data;
+	public void setImgId(Long imgId) {
+		this.imgId = imgId;
 	}
 
 }
