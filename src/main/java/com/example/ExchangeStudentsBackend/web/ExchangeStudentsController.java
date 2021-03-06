@@ -16,6 +16,8 @@ import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
 import com.example.ExchangeStudentsBackend.model.Image;
 import com.example.ExchangeStudentsBackend.model.ImageRepository;
+import com.example.ExchangeStudentsBackend.model.Offer;
+import com.example.ExchangeStudentsBackend.model.OfferRepository;
 import com.example.ExchangeStudentsBackend.model.Request;
 import com.example.ExchangeStudentsBackend.model.RequestRepository;
 
@@ -30,6 +32,9 @@ public class ExchangeStudentsController {
 
 	@Autowired
 	private RequestRepository requestrepo;
+
+	@Autowired
+	private OfferRepository offerrepo;
 
 	// Get all FAQs
 	// Only for admin users
@@ -78,14 +83,6 @@ public class ExchangeStudentsController {
 		return (List<Request>) requestrepo.findAll();
 	}
 
-	/*
-	 * // Add a new Request
-	 * 
-	 * @PostMapping("/addrequest") public @ResponseBody Request
-	 * newRequest(@RequestBody Request newRequest) { return
-	 * requestrepo.save(newRequest); }
-	 */
-
 	// Add a new Request
 	@PostMapping("/addrequest")
 	public @ResponseBody Request newRequest(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
@@ -106,41 +103,70 @@ public class ExchangeStudentsController {
 		} catch (Exception e) {
 			return null;
 		}
-
 	}
 
-	@PostMapping("/img")
-	public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
+	// Delete a Request
+	@DeleteMapping("/request/{id}")
+	public @ResponseBody void deleteRequest(@PathVariable("id") Long requestId) {
+		Optional<Request> req = requestrepo.findById(requestId);
+		imgrepo.deleteById(req.get().getImgId());
+		requestrepo.deleteById(requestId);
+	}
+
+	// Get all Offers
+	@RequestMapping(value = "/offer", method = RequestMethod.GET)
+	public @ResponseBody List<Offer> offerList() {
+		return (List<Offer>) offerrepo.findAll();
+	}
+
+	// Add a new Offer
+	@PostMapping("/addoffer")
+	public @ResponseBody Offer newOffer(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
+			@RequestParam("desc") String desc, @RequestParam("phoneNumber") String phoneNumber,
+			@RequestParam("location") String location, double price) {
+
 		try {
 			Image img = new Image();
 			img.setName(StringUtils.cleanPath(file.getOriginalFilename()));
 			img.setType(file.getContentType());
 			img.setData(file.getBytes());
 
-			imgrepo.save(img);
+			Image savedImg = imgrepo.save(img);
 
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(String.format("File uploaded successfully: %s", file.getOriginalFilename()));
+			Offer newOffer = new Offer(name, desc, phoneNumber, location, savedImg.getId(), price);
+			return offerrepo.save(newOffer);
+
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(String.format("Could not upload the file: %s!", file.getOriginalFilename()));
+			return null;
 		}
 	}
 
-	@RequestMapping(value = "/allimg", method = RequestMethod.GET)
-	public @ResponseBody List<Image> allImages() {
-		return (List<Image>) imgrepo.findAll();
+	// Delete an Offer
+	@DeleteMapping("/offer/{id}")
+	public @ResponseBody void deleteOffer(@PathVariable("id") Long offerId) {
+		Optional<Offer> offer = offerrepo.findById(offerId);
+		imgrepo.deleteById(offer.get().getImgId());
+		requestrepo.deleteById(offerId);
 	}
 
+	/*
+	 * @RequestMapping(value = "/allimg", method = RequestMethod.GET)
+	 * public @ResponseBody List<Image> allImages() { return (List<Image>)
+	 * imgrepo.findAll(); }
+	 */
+
+	// Get an Image
 	@RequestMapping(value = "/img/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
 	public @ResponseBody byte[] getImage(@PathVariable("id") Long imgId) {
 		Optional<Image> img = imgrepo.findById(imgId);
-		/*
-		 * String fileDownloadUri =
-		 * ServletUriComponentsBuilder.fromCurrentContextPath().path("/files/")
-		 * .path(String.valueOf(img.get().getId())) .toUriString();
-		 */
 		return img.get().getData();
 	}
+
+	/*
+	 * // Delete an Image
+	 * 
+	 * @DeleteMapping("/img/{id}") public @ResponseBody void
+	 * deleteImg(@PathVariable("id") Long imgId) { imgrepo.deleteById(imgId); }
+	 */
 
 }

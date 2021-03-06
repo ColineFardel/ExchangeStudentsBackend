@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
-public interface RequestRepository extends CrudRepository<Request, Long>{
+public interface OfferRepository extends CrudRepository<Offer, Long> {
 
 }
