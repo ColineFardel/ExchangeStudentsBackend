@@ -146,7 +146,7 @@ public class ExchangeStudentsController {
 	public @ResponseBody void deleteOffer(@PathVariable("id") Long offerId) {
 		Optional<Offer> offer = offerrepo.findById(offerId);
 		imgrepo.deleteById(offer.get().getImgId());
-		requestrepo.deleteById(offerId);
+		offerrepo.deleteById(offerId);
 	}
 
 	/*
@@ -161,12 +161,5 @@ public class ExchangeStudentsController {
 		Optional<Image> img = imgrepo.findById(imgId);
 		return img.get().getData();
 	}
-
-	/*
-	 * // Delete an Image
-	 * 
-	 * @DeleteMapping("/img/{id}") public @ResponseBody void
-	 * deleteImg(@PathVariable("id") Long imgId) { imgrepo.deleteById(imgId); }
-	 */
 
 }
