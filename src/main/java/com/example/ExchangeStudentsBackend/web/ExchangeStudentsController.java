@@ -178,10 +178,17 @@ public class ExchangeStudentsController {
 		return (List<Topic>) topicrepo.findAll();
 	}
 
+	/*
+	 * // Add a new Topic
+	 * 
+	 * @PostMapping("/addtopic") public @ResponseBody Topic newTopic(@RequestBody
+	 * Topic newTopic) { return topicrepo.save(newTopic); }
+	 */
+
 	// Add a new Topic
 	@PostMapping("/addtopic")
-	public @ResponseBody Topic newTopic(@RequestBody Topic newTopic) {
-		return topicrepo.save(newTopic);
+	public @ResponseBody Topic newTopic(@RequestBody String name) {
+		return topicrepo.save(new Topic(name));
 	}
 
 	// Add a new Chat

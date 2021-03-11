@@ -16,6 +16,12 @@ public class Topic {
 	@JsonManagedReference
 	private List<Chat> chats;
 
+	public Topic(String name, List<Chat> chats) {
+		super();
+		this.name = name;
+		this.chats = chats;
+	}
+
 	public Topic(String name) {
 		super();
 		this.name = name;
