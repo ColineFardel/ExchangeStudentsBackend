@@ -12,6 +12,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ExchangeStudentsBackend.model.Chat;
+import com.example.ExchangeStudentsBackend.model.ChatRepository;
 import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
 import com.example.ExchangeStudentsBackend.model.Image;
@@ -20,6 +22,8 @@ import com.example.ExchangeStudentsBackend.model.Offer;
 import com.example.ExchangeStudentsBackend.model.OfferRepository;
 import com.example.ExchangeStudentsBackend.model.Request;
 import com.example.ExchangeStudentsBackend.model.RequestRepository;
+import com.example.ExchangeStudentsBackend.model.Topic;
+import com.example.ExchangeStudentsBackend.model.TopicRepository;
 
 @Controller
 public class ExchangeStudentsController {
@@ -35,6 +39,12 @@ public class ExchangeStudentsController {
 
 	@Autowired
 	private OfferRepository offerrepo;
+
+	@Autowired
+	private ChatRepository chatrepo;
+
+	@Autowired
+	private TopicRepository topicrepo;
 
 	// Get all FAQs
 	// Only for admin users
@@ -162,4 +172,21 @@ public class ExchangeStudentsController {
 		return img.get().getData();
 	}
 
+	// Get all topics
+	@RequestMapping(value = "/topic", method = RequestMethod.GET)
+	public @ResponseBody List<Topic> topicList() {
+		return (List<Topic>) topicrepo.findAll();
+	}
+
+	// Add a new Topic
+	@PostMapping("/addtopic")
+	public @ResponseBody Topic newTopic(@RequestBody Topic newTopic) {
+		return topicrepo.save(newTopic);
+	}
+
+	// Add a new Chat
+	@PostMapping("/addchat")
+	public @ResponseBody Chat newChat(@RequestBody Chat newChat) {
+		return chatrepo.save(newChat);
+	}
 }
