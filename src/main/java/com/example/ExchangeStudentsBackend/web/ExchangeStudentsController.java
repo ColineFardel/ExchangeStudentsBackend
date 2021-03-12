@@ -178,17 +178,23 @@ public class ExchangeStudentsController {
 		return (List<Topic>) topicrepo.findAll();
 	}
 
+	// Add a new Topic
+	@PostMapping("/addtopic")
+	public @ResponseBody Topic newTopic(@RequestBody Topic newTopic) {
+		return topicrepo.save(newTopic);
+	}
+
 	/*
 	 * // Add a new Topic
 	 * 
 	 * @PostMapping("/addtopic") public @ResponseBody Topic newTopic(@RequestBody
-	 * Topic newTopic) { return topicrepo.save(newTopic); }
+	 * String name) { return topicrepo.save(new Topic(name)); }
 	 */
 
-	// Add a new Topic
-	@PostMapping("/addtopic")
-	public @ResponseBody Topic newTopic(@RequestBody String name) {
-		return topicrepo.save(new Topic(name));
+	// Delete a Topic
+	@DeleteMapping("/topic/{id}")
+	public @ResponseBody void deleteTopic(@PathVariable("id") Long topicId) {
+		topicrepo.deleteById(topicId);
 	}
 
 	// Add a new Chat

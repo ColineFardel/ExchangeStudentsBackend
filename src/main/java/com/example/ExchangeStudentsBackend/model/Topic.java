@@ -2,6 +2,8 @@ package com.example.ExchangeStudentsBackend.model;
 
 import java.util.List;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -9,7 +11,7 @@ public class Topic {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private long id;
 	private String name;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "topic")
@@ -28,7 +30,7 @@ public class Topic {
 	}
 
 	public Topic() {
-		super();
+
 	}
 
 	public Long getId() {
@@ -53,6 +55,11 @@ public class Topic {
 
 	public void setChats(List<Chat> chats) {
 		this.chats = chats;
+	}
+
+	@Override
+	public String toString() {
+		return "Topic [id= " + id + ", name= " + name + "]";
 	}
 
 }
