@@ -202,4 +202,11 @@ public class ExchangeStudentsController {
 	public @ResponseBody Chat newChat(@RequestBody Chat newChat) {
 		return chatrepo.save(newChat);
 	}
+
+	// Get chats from one topic
+	@RequestMapping(value = "/chat/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<Chat> chatList(@PathVariable("id") Long topicId) {
+		return (List<Chat>) chatrepo.findByTopic(topicrepo.findById(topicId).get());
+	}
+
 }
