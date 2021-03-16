@@ -1,5 +1,6 @@
 package com.example.ExchangeStudentsBackend.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ExchangeStudentsBackend.model.Chat;
 import com.example.ExchangeStudentsBackend.model.ChatRepository;
+import com.example.ExchangeStudentsBackend.model.ChatResponse;
 import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
 import com.example.ExchangeStudentsBackend.model.Image;
@@ -184,14 +186,8 @@ public class ExchangeStudentsController {
 		return topicrepo.save(newTopic);
 	}
 
-	/*
-	 * // Add a new Topic
-	 * 
-	 * @PostMapping("/addtopic") public @ResponseBody Topic newTopic(@RequestBody
-	 * String name) { return topicrepo.save(new Topic(name)); }
-	 */
-
 	// Delete a Topic
+	// Only for admin
 	@DeleteMapping("/topic/{id}")
 	public @ResponseBody void deleteTopic(@PathVariable("id") Long topicId) {
 		topicrepo.deleteById(topicId);
@@ -207,6 +203,26 @@ public class ExchangeStudentsController {
 	@RequestMapping(value = "/chat/{id}", method = RequestMethod.GET)
 	public @ResponseBody List<Chat> chatList(@PathVariable("id") Long topicId) {
 		return (List<Chat>) chatrepo.findByTopic(topicrepo.findById(topicId).get());
+	}
+
+	// Get chats from one topic
+	@RequestMapping(value = "/chatByDate/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<ChatResponse> chatListWithTitle(@PathVariable("id") Long topicId) {
+		List<Chat> chats = chatrepo.findByTopic(topicrepo.findById(topicId).get());
+		List<String> temp = new ArrayList<String>();
+		List<ChatResponse> chatsWithTitle = new ArrayList<ChatResponse>();
+		if (!chats.isEmpty()) {
+			for (Chat chat : chats) {
+				if (!temp.contains(chat.getDate())) {
+					temp.add(chat.getDate());
+				}
+			}
+			for (String date : temp) {
+				chatsWithTitle.add(new ChatResponse(date, chatrepo.findByTopicAndDate(topicrepo.findById(topicId).get(), date)));
+			}
+		}
+		
+		return chatsWithTitle;
 	}
 
 }
