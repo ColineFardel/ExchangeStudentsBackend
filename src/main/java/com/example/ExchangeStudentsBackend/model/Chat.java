@@ -1,9 +1,7 @@
 package com.example.ExchangeStudentsBackend.model;
 
 import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Chat {
@@ -16,9 +14,14 @@ public class Chat {
 	private String time;
 
 	@ManyToOne
-	@JsonBackReference
+	@JsonBackReference(value = "topicChat")
 	@JoinColumn(name = "topicid")
 	private Topic topic;
+
+	@ManyToOne
+	@JsonBackReference(value = "courseChat")
+	@JoinColumn(name = "courseid")
+	private Course course;
 
 	public Chat() {
 		super();
@@ -30,6 +33,22 @@ public class Chat {
 		this.date = date;
 		this.time = time;
 		this.topic = topic;
+	}
+
+	public Chat(String text, String date, String time, Course course) {
+		super();
+		this.text = text;
+		this.date = date;
+		this.time = time;
+		this.course = course;
+	}
+
+	public Course getCourse() {
+		return course;
+	}
+
+	public void setCourse(Course course) {
+		this.course = course;
 	}
 
 	public long getId() {

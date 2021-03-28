@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.ExchangeStudentsBackend.model.Chat;
 import com.example.ExchangeStudentsBackend.model.ChatRepository;
 import com.example.ExchangeStudentsBackend.model.ChatResponse;
+import com.example.ExchangeStudentsBackend.model.Course;
+import com.example.ExchangeStudentsBackend.model.CourseRepository;
 import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
 import com.example.ExchangeStudentsBackend.model.Image;
@@ -47,6 +49,8 @@ public class ExchangeStudentsController {
 
 	@Autowired
 	private TopicRepository topicrepo;
+	@Autowired
+	private CourseRepository courserepo;
 
 	// Get all FAQs
 	// Only for admin users
@@ -200,14 +204,14 @@ public class ExchangeStudentsController {
 	}
 
 	// Get chats from one topic
-	@RequestMapping(value = "/chat/{id}", method = RequestMethod.GET)
-	public @ResponseBody List<Chat> chatList(@PathVariable("id") Long topicId) {
+	@RequestMapping(value = "/chat/topic/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<Chat> topicchatList(@PathVariable("id") Long topicId) {
 		return (List<Chat>) chatrepo.findByTopic(topicrepo.findById(topicId).get());
 	}
 
 	// Get chats from one topic
-	@RequestMapping(value = "/chatByDate/{id}", method = RequestMethod.GET)
-	public @ResponseBody List<ChatResponse> chatListWithTitle(@PathVariable("id") Long topicId) {
+	@RequestMapping(value = "/chatByDate/topic/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<ChatResponse> topicChatWithTitle(@PathVariable("id") Long topicId) {
 		List<Chat> chats = chatrepo.findByTopic(topicrepo.findById(topicId).get());
 		List<String> temp = new ArrayList<String>();
 		List<ChatResponse> chatsWithTitle = new ArrayList<ChatResponse>();
@@ -223,5 +227,50 @@ public class ExchangeStudentsController {
 			}
 		}
 		return chatsWithTitle;
+	}
+
+	// Get chats from one course
+	@RequestMapping(value = "/chat/course/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<Chat> coursechatList(@PathVariable("id") Long courseId) {
+		return (List<Chat>) chatrepo.findByCourse(courserepo.findById(courseId).get());
+	}
+
+	// Get chats from one course
+	@RequestMapping(value = "/chatByDate/course/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<ChatResponse> courseChatWithTitle(@PathVariable("id") Long courseId) {
+		List<Chat> chats = chatrepo.findByCourse(courserepo.findById(courseId).get());
+		List<String> temp = new ArrayList<String>();
+		List<ChatResponse> chatsWithTitle = new ArrayList<ChatResponse>();
+		if (!chats.isEmpty()) {
+			for (Chat chat : chats) {
+				if (!temp.contains(chat.getDate())) {
+					temp.add(chat.getDate());
+				}
+			}
+			for (String date : temp) {
+				chatsWithTitle.add(
+						new ChatResponse(date, chatrepo.findByCourseAndDate(courserepo.findById(courseId).get(), date)));
+			}
+		}
+		return chatsWithTitle;
+	}
+
+	// Get all courses
+	@RequestMapping(value = "/course", method = RequestMethod.GET)
+	public @ResponseBody List<Course> courseList() {
+		return (List<Course>) courserepo.findAll();
+	}
+
+	// Add a new Course
+	@PostMapping("/addcourse")
+	public @ResponseBody Course newCourse(@RequestBody Course newCourse) {
+		return courserepo.save(newCourse);
+	}
+
+	// Delete a Course
+	// Only for admin
+	@DeleteMapping("/course/{id}")
+	public @ResponseBody void deleteCourse(@PathVariable("id") Long courseId) {
+		courserepo.deleteById(courseId);
 	}
 }
