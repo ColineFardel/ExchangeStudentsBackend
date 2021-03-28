@@ -218,11 +218,10 @@ public class ExchangeStudentsController {
 				}
 			}
 			for (String date : temp) {
-				chatsWithTitle.add(new ChatResponse(date, chatrepo.findByTopicAndDate(topicrepo.findById(topicId).get(), date)));
+				chatsWithTitle.add(
+						new ChatResponse(date, chatrepo.findByTopicAndDate(topicrepo.findById(topicId).get(), date)));
 			}
 		}
-		
 		return chatsWithTitle;
 	}
-
 }
