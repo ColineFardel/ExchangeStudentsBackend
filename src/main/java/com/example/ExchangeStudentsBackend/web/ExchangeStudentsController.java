@@ -28,6 +28,7 @@ import com.example.ExchangeStudentsBackend.model.Request;
 import com.example.ExchangeStudentsBackend.model.RequestRepository;
 import com.example.ExchangeStudentsBackend.model.Topic;
 import com.example.ExchangeStudentsBackend.model.TopicRepository;
+import com.example.ExchangeStudentsBackend.model.UniResponse;
 
 @Controller
 public class ExchangeStudentsController {
@@ -248,8 +249,8 @@ public class ExchangeStudentsController {
 				}
 			}
 			for (String date : temp) {
-				chatsWithTitle.add(
-						new ChatResponse(date, chatrepo.findByCourseAndDate(courserepo.findById(courseId).get(), date)));
+				chatsWithTitle.add(new ChatResponse(date,
+						chatrepo.findByCourseAndDate(courserepo.findById(courseId).get(), date)));
 			}
 		}
 		return chatsWithTitle;
@@ -272,5 +273,21 @@ public class ExchangeStudentsController {
 	@DeleteMapping("/course/{id}")
 	public @ResponseBody void deleteCourse(@PathVariable("id") Long courseId) {
 		courserepo.deleteById(courseId);
+	}
+
+	// Get all universities
+	@RequestMapping(value = "/universities", method = RequestMethod.GET)
+	public @ResponseBody List<UniResponse> uniList() {
+		List<Course> courses = (List<Course>) courserepo.findAll();
+		List<UniResponse> universitiesResponse = new ArrayList<UniResponse>();
+		List<String> universities = new ArrayList<String>();
+		for (Course course : courses) {
+			String uni = course.getUniversity();
+			if (!universities.contains(uni)) {
+				universities.add(uni);
+				universitiesResponse.add(new UniResponse(uni, uni));
+			}
+		}
+		return universitiesResponse;
 	}
 }
