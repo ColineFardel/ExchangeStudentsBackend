@@ -20,7 +20,16 @@ public class ImageRepositoryTest {
 	@Autowired
 	private ImageRepository imgrepo;
 
-	// Delete FAQ
+	// Add a new Image
+	@Test
+	public void createImage() {
+		byte[] temp = null;
+		Image img = new Image("Image", "Image", temp);
+		imgrepo.save(img);
+		assertThat(img.getId()).isNotNull();
+	}
+
+	// Delete Image
 	@Test
 	public void deleteImage() {
 		List<Image> imgs = (List<Image>) imgrepo.findAll();

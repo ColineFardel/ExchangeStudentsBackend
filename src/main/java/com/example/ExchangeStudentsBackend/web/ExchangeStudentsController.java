@@ -55,13 +55,13 @@ public class ExchangeStudentsController {
 
 	// Get all FAQs
 	// Only for admin users
-	@RequestMapping(value = "/faq", method = RequestMethod.GET)
+	@RequestMapping(value = "/faqs", method = RequestMethod.GET)
 	public @ResponseBody List<FAQ> faqListRest() {
 		return (List<FAQ>) faqrepo.findAll();
 	}
 
 	// Get answered FAQs
-	@RequestMapping(value = "/answeredfaq", method = RequestMethod.GET)
+	@RequestMapping(value = "/answeredfaqs", method = RequestMethod.GET)
 	public @ResponseBody List<FAQ> answeredFaqs() {
 		return (List<FAQ>) faqrepo.findByStatus("answered");
 	}
@@ -95,7 +95,7 @@ public class ExchangeStudentsController {
 	}
 
 	// Get all Requests
-	@RequestMapping(value = "/request", method = RequestMethod.GET)
+	@RequestMapping(value = "/requests", method = RequestMethod.GET)
 	public @ResponseBody List<Request> requestList() {
 		return (List<Request>) requestrepo.findAll();
 	}
@@ -131,7 +131,7 @@ public class ExchangeStudentsController {
 	}
 
 	// Get all Offers
-	@RequestMapping(value = "/offer", method = RequestMethod.GET)
+	@RequestMapping(value = "/offers", method = RequestMethod.GET)
 	public @ResponseBody List<Offer> offerList() {
 		return (List<Offer>) offerrepo.findAll();
 	}
@@ -180,7 +180,7 @@ public class ExchangeStudentsController {
 	}
 
 	// Get all topics
-	@RequestMapping(value = "/topic", method = RequestMethod.GET)
+	@RequestMapping(value = "/topics", method = RequestMethod.GET)
 	public @ResponseBody List<Topic> topicList() {
 		return (List<Topic>) topicrepo.findAll();
 	}
@@ -257,7 +257,7 @@ public class ExchangeStudentsController {
 	}
 
 	// Get all courses
-	@RequestMapping(value = "/course", method = RequestMethod.GET)
+	@RequestMapping(value = "/courses", method = RequestMethod.GET)
 	public @ResponseBody List<Course> courseList() {
 		return (List<Course>) courserepo.findAll();
 	}
@@ -273,6 +273,20 @@ public class ExchangeStudentsController {
 	@DeleteMapping("/course/{id}")
 	public @ResponseBody void deleteCourse(@PathVariable("id") Long courseId) {
 		courserepo.deleteById(courseId);
+	}
+
+	// Modify a course
+	@PutMapping("/course/{id}")
+	public @ResponseBody Course course(@RequestBody Course newCourse, @PathVariable("id") Long courseId) {
+		return courserepo.findById(courseId).map(course -> {
+			course.setName(newCourse.getName());
+			course.setTeacher(newCourse.getTeacher());
+			course.setUniversity(newCourse.getUniversity());
+			return courserepo.save(course);
+		}).orElseGet(() -> {
+			newCourse.setId(courseId);
+			return courserepo.save(newCourse);
+		});
 	}
 
 	// Get all universities

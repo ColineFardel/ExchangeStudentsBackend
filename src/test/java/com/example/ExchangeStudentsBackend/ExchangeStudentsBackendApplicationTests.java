@@ -1,4 +1,5 @@
 package com.example.ExchangeStudentsBackend;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 //import org.junit.Test;
@@ -13,7 +14,7 @@ import com.example.ExchangeStudentsBackend.web.ExchangeStudentsController;
 //@RunWith(SpringRunner.class)
 @SpringBootTest
 class ExchangeStudentsBackendApplicationTests {
-	
+
 	@Autowired
 	private ExchangeStudentsController controller;
 

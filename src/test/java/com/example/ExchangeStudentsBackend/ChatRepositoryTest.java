@@ -28,7 +28,7 @@ public class ChatRepositoryTest {
 	private TopicRepository topicrepo;
 
 	@Autowired
-	CourseRepository courserepo;
+	private CourseRepository courserepo;
 
 	// Add a new Chat
 	@Test
@@ -42,36 +42,52 @@ public class ChatRepositoryTest {
 	// Search Chat by Topic
 	@Test
 	public void FindChatByTopic() {
-		List<Topic> topics = (List<Topic>) topicrepo.findAll();
-		List<Chat> chats = chatrepo.findByTopic(topics.get(0));
+		Topic topic = new Topic("Name");
+		topicrepo.save(topic);
+
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topic);
+		chatrepo.save(chat);
+
+		List<Chat> chats = chatrepo.findByTopic(topic);
 		assertThat(chats).hasSizeGreaterThan(0);
 	}
 
 	// Search Chat by Topic and Date
 	@Test
 	public void FindChatByTopicAndDate() {
-		List<Topic> topics = (List<Topic>) topicrepo.findAll();
-		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topics.get(0));
+		Topic topic = new Topic("Name");
+		topicrepo.save(topic);
+
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topic);
 		chatrepo.save(chat);
-		List<Chat> chats = chatrepo.findByTopicAndDate(topics.get(0), "March 20, 2021");
+
+		List<Chat> chats = chatrepo.findByTopicAndDate(topic, "March 20, 2021");
 		assertThat(chats).hasSizeGreaterThan(0);
 	}
 
 	// Search Chat by Course
 	@Test
 	public void FindChatByCourse() {
-		List<Course> courses = (List<Course>) courserepo.findAll();
-		List<Chat> chats = chatrepo.findByCourse(courses.get(0));
+		Course course = new Course("Name", "Teacher", "University");
+		courserepo.save(course);
+
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", course);
+		chatrepo.save(chat);
+
+		List<Chat> chats = chatrepo.findByCourse(course);
 		assertThat(chats).hasSizeGreaterThan(0);
 	}
 
 	// Search Chat by Course and Date
 	@Test
 	public void FindChatByCourseAndDate() {
-		List<Course> courses = (List<Course>) courserepo.findAll();
-		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", courses.get(0));
+		Course course = new Course("Name", "Teacher", "University");
+		courserepo.save(course);
+
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", course);
 		chatrepo.save(chat);
-		List<Chat> chats = chatrepo.findByCourseAndDate(courses.get(0), "March 20, 2021");
+
+		List<Chat> chats = chatrepo.findByCourseAndDate(course, "March 20, 2021");
 		assertThat(chats).hasSizeGreaterThan(0);
 	}
 }

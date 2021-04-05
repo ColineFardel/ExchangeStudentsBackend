@@ -37,4 +37,18 @@ public class CourseRepositoryTest {
 		courserepo.deleteById(courses.get(0).getId());
 		assertThat(courserepo.findAll()).hasSizeLessThan(temp);
 	}
+
+	// Modify Course
+	@Test
+	public void modifyCourse() {
+		Course course = new Course("Name", "Teacher", "University");
+		courserepo.save(course);
+		assertThat(course.getId()).isNotNull();
+
+		Course modifiedCourse = courserepo.findById(course.getId()).get();
+		modifiedCourse.setTeacher("New teacher");
+		courserepo.save(modifiedCourse);
+
+		assertThat(courserepo.findById(course.getId()).get().getTeacher()).contains("New teacher");
+	}
 }

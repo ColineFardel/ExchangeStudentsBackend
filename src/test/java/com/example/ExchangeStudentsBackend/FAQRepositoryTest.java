@@ -32,13 +32,6 @@ public class FAQRepositoryTest {
 		assertThat(faq.getId()).isNotNull();
 	}
 
-	// Search by status
-	@Test
-	public void findFAQByStatus() {
-		List<FAQ> faqs = faqrepo.findByStatus("sent");
-		assertThat(faqs).hasSizeGreaterThan(0);
-	}
-
 	// Delete FAQ
 	@Test
 	public void deleteFAQ() {
@@ -48,6 +41,32 @@ public class FAQRepositoryTest {
 
 		faqrepo.deleteById(faqs.get(0).getId());
 		assertThat(faqrepo.findAll()).hasSizeLessThan(temp);
+	}
+
+	// Modify FAQ
+	@Test
+	public void modifyFAQ() {
+		FAQ faq = new FAQ("Question", "Answer", "answered", "tag");
+		faqrepo.save(faq);
+		assertThat(faq.getId()).isNotNull();
+
+		FAQ modifiedFAQ = faqrepo.findById(faq.getId()).get();
+		modifiedFAQ.setAnswer("This is an answer");
+		faqrepo.save(modifiedFAQ);
+
+		assertThat(faqrepo.findById(faq.getId()).get().getAnswer()).contains("This is an answer");
+	}
+
+	// Search by status
+	@Test
+	public void findFAQByStatus() {
+		FAQ faq = new FAQ("Question", "Answer", "sent", "tag");
+		faqrepo.save(faq);
+		assertThat(faq.getId()).isNotNull();
+
+		List<FAQ> faqs = faqrepo.findByStatus("sent");
+		assertThat(faqs).hasSizeGreaterThan(0);
+		assertThat(faqs.get(0).getStatus()).contains("sent");
 	}
 
 }
