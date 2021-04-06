@@ -26,6 +26,8 @@ import com.example.ExchangeStudentsBackend.model.Offer;
 import com.example.ExchangeStudentsBackend.model.OfferRepository;
 import com.example.ExchangeStudentsBackend.model.Request;
 import com.example.ExchangeStudentsBackend.model.RequestRepository;
+import com.example.ExchangeStudentsBackend.model.Tip;
+import com.example.ExchangeStudentsBackend.model.TipRepository;
 import com.example.ExchangeStudentsBackend.model.Topic;
 import com.example.ExchangeStudentsBackend.model.TopicRepository;
 import com.example.ExchangeStudentsBackend.model.UniResponse;
@@ -50,8 +52,12 @@ public class ExchangeStudentsController {
 
 	@Autowired
 	private TopicRepository topicrepo;
+
 	@Autowired
 	private CourseRepository courserepo;
+
+	@Autowired
+	private TipRepository tiprepo;
 
 	// Get all FAQs
 	// Only for admin users
@@ -303,5 +309,47 @@ public class ExchangeStudentsController {
 			}
 		}
 		return universitiesResponse;
+	}
+
+	// Get all Tips
+	@RequestMapping(value = "/tips", method = RequestMethod.GET)
+	public @ResponseBody List<Tip> tipsList() {
+		return (List<Tip>) tiprepo.findAll();
+	}
+
+	// Add a new Tip
+	@PostMapping("/addtipwithimg")
+	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
+			@RequestParam("desc") String desc, @RequestParam("tag") String tag,
+			@RequestParam("location") String location) {
+
+		try {
+			Image img = new Image();
+			img.setName(StringUtils.cleanPath(file.getOriginalFilename()));
+			img.setType(file.getContentType());
+			img.setData(file.getBytes());
+
+			Image savedImg = imgrepo.save(img);
+
+			Tip newTip = new Tip(name, desc, tag, location, savedImg.getId());
+			return tiprepo.save(newTip);
+
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	// Add a new Tip
+	@PostMapping("/addtip")
+	public @ResponseBody Tip newTip(@RequestBody Tip newTip) {
+		return tiprepo.save(newTip);
+	}
+
+	// Delete a Tip
+	@DeleteMapping("/tip/{id}")
+	public @ResponseBody void deleteTip(@PathVariable("id") Long tipId) {
+		Optional<Tip> tip = tiprepo.findById(tipId);
+		imgrepo.deleteById(tip.get().getImg());
+		offerrepo.deleteById(tipId);
 	}
 }
