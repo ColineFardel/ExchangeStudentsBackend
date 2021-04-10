@@ -317,11 +317,32 @@ public class ExchangeStudentsController {
 		return (List<Tip>) tiprepo.findAll();
 	}
 
+	/*
+	 * // Add a new Tip
+	 * 
+	 * @PostMapping("/addtipwithimg") public @ResponseBody Tip
+	 * newTip(@RequestParam("file") MultipartFile file, @RequestParam("name") String
+	 * name,
+	 * 
+	 * @RequestParam("desc") String desc, @RequestParam("tag") String tag,
+	 * 
+	 * @RequestParam("location") String location) {
+	 * 
+	 * try { Image img = new Image();
+	 * img.setName(StringUtils.cleanPath(file.getOriginalFilename()));
+	 * img.setType(file.getContentType()); img.setData(file.getBytes());
+	 * 
+	 * Image savedImg = imgrepo.save(img);
+	 * 
+	 * Tip newTip = new Tip(name, desc, tag, location, savedImg.getId()); return
+	 * tiprepo.save(newTip);
+	 * 
+	 * } catch (Exception e) { return null; } }
+	 */
+
 	// Add a new Tip
 	@PostMapping("/addtipwithimg")
-	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
-			@RequestParam("desc") String desc, @RequestParam("tag") String tag,
-			@RequestParam("location") String location) {
+	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestParam("tip") Tip tip) {
 
 		try {
 			Image img = new Image();
@@ -331,8 +352,8 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			Tip newTip = new Tip(name, desc, tag, location, savedImg.getId());
-			return tiprepo.save(newTip);
+			tip.setImg(savedImg.getId());
+			return tiprepo.save(tip);
 
 		} catch (Exception e) {
 			return null;
