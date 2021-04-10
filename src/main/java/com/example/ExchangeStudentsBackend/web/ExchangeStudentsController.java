@@ -342,7 +342,7 @@ public class ExchangeStudentsController {
 
 	// Add a new Tip
 	@PostMapping("/addtipwithimg")
-	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestParam("tip") Tip tip) {
+	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestBody Tip newTip) {
 
 		try {
 			Image img = new Image();
@@ -352,8 +352,8 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			tip.setImg(savedImg.getId());
-			return tiprepo.save(tip);
+			newTip.setImg(savedImg.getId());
+			return tiprepo.save(newTip);
 
 		} catch (Exception e) {
 			return null;
