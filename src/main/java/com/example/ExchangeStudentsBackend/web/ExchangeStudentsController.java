@@ -356,7 +356,9 @@ public class ExchangeStudentsController {
 	@DeleteMapping("/tip/{id}")
 	public @ResponseBody void deleteTip(@PathVariable("id") Long tipId) {
 		Optional<Tip> tip = tiprepo.findById(tipId);
-		imgrepo.deleteById(tip.get().getImg());
+		if (tip.get().getImg() > 0) {
+			imgrepo.deleteById(tip.get().getImg());
+		}
 		tiprepo.deleteById(tipId);
 	}
 }
