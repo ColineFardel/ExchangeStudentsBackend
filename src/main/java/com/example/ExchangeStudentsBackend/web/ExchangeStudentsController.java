@@ -346,23 +346,6 @@ public class ExchangeStudentsController {
 		}
 	}
 
-	/*
-	 * // Add a new Tip
-	 * 
-	 * @PostMapping("/addtipwithimg") public @ResponseBody Tip
-	 * newTip(@RequestParam("file") MultipartFile file, @RequestBody Tip newTip) {
-	 * 
-	 * try { Image img = new Image();
-	 * img.setName(StringUtils.cleanPath(file.getOriginalFilename()));
-	 * img.setType(file.getContentType()); img.setData(file.getBytes());
-	 * 
-	 * Image savedImg = imgrepo.save(img);
-	 * 
-	 * newTip.setImg(savedImg.getId()); return tiprepo.save(newTip);
-	 * 
-	 * } catch (Exception e) { return null; } }
-	 */
-
 	// Add a new Tip
 	@PostMapping("/addtip")
 	public @ResponseBody Tip newTip(@RequestBody Tip newTip) {
@@ -374,6 +357,6 @@ public class ExchangeStudentsController {
 	public @ResponseBody void deleteTip(@PathVariable("id") Long tipId) {
 		Optional<Tip> tip = tiprepo.findById(tipId);
 		imgrepo.deleteById(tip.get().getImg());
-		offerrepo.deleteById(tipId);
+		tiprepo.deleteById(tipId);
 	}
 }
