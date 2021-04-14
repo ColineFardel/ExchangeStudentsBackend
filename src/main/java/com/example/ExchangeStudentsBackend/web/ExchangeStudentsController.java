@@ -18,6 +18,8 @@ import com.example.ExchangeStudentsBackend.model.ChatRepository;
 import com.example.ExchangeStudentsBackend.model.ChatResponse;
 import com.example.ExchangeStudentsBackend.model.Course;
 import com.example.ExchangeStudentsBackend.model.CourseRepository;
+import com.example.ExchangeStudentsBackend.model.Event;
+import com.example.ExchangeStudentsBackend.model.EventRepository;
 import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
 import com.example.ExchangeStudentsBackend.model.Image;
@@ -59,6 +61,11 @@ public class ExchangeStudentsController {
 	@Autowired
 	private TipRepository tiprepo;
 
+	@Autowired
+	private EventRepository eventrepo;
+
+	// ********BEGIN FAQ CALLS********
+
 	// Get all FAQs
 	// Only for admin users
 	@RequestMapping(value = "/faqs", method = RequestMethod.GET)
@@ -99,6 +106,10 @@ public class ExchangeStudentsController {
 	public @ResponseBody void deleteFaq(@PathVariable("id") Long faqId) {
 		faqrepo.deleteById(faqId);
 	}
+
+	// ********END FAQ CALLS********
+
+	// ********BEGIN MARKET CALLS********
 
 	// Get all Requests
 	@RequestMapping(value = "/requests", method = RequestMethod.GET)
@@ -172,18 +183,9 @@ public class ExchangeStudentsController {
 		offerrepo.deleteById(offerId);
 	}
 
-	/*
-	 * @RequestMapping(value = "/allimg", method = RequestMethod.GET)
-	 * public @ResponseBody List<Image> allImages() { return (List<Image>)
-	 * imgrepo.findAll(); }
-	 */
+	// ********END MARKET CALLS********
 
-	// Get an Image
-	@RequestMapping(value = "/img/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-	public @ResponseBody byte[] getImage(@PathVariable("id") Long imgId) {
-		Optional<Image> img = imgrepo.findById(imgId);
-		return img.get().getData();
-	}
+	// ********BEGIN TOPIC CALLS********
 
 	// Get all topics
 	@RequestMapping(value = "/topics", method = RequestMethod.GET)
@@ -204,6 +206,10 @@ public class ExchangeStudentsController {
 		topicrepo.deleteById(topicId);
 	}
 
+	// ********END TOPIC CALLS********
+
+	// ********BEGIN CHAT CALLS********
+
 	// Add a new Chat
 	@PostMapping("/addchat")
 	public @ResponseBody Chat newChat(@RequestBody Chat newChat) {
@@ -216,7 +222,7 @@ public class ExchangeStudentsController {
 		return (List<Chat>) chatrepo.findByTopic(topicrepo.findById(topicId).get());
 	}
 
-	// Get chats from one topic
+	// Get chats from one topic sorted by date
 	@RequestMapping(value = "/chatByDate/topic/{id}", method = RequestMethod.GET)
 	public @ResponseBody List<ChatResponse> topicChatWithTitle(@PathVariable("id") Long topicId) {
 		List<Chat> chats = chatrepo.findByTopic(topicrepo.findById(topicId).get());
@@ -261,6 +267,10 @@ public class ExchangeStudentsController {
 		}
 		return chatsWithTitle;
 	}
+
+	// ********END CHAT CALLS********
+
+	// ********BEGIN COURSE CALLS********
 
 	// Get all courses
 	@RequestMapping(value = "/courses", method = RequestMethod.GET)
@@ -311,14 +321,17 @@ public class ExchangeStudentsController {
 		return universitiesResponse;
 	}
 
+	// ********END COURSE CALLS********
+
+	// ********BEGIN TIP CALLS********
+
 	// Get all Tips
 	@RequestMapping(value = "/tips", method = RequestMethod.GET)
 	public @ResponseBody List<Tip> tipsList() {
 		return (List<Tip>) tiprepo.findAll();
 	}
 
-	// Add a new Tip
-
+	// Add a new Tip with image
 	@PostMapping("/addtipwithimg")
 	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
 			@RequestParam("desc") String desc, @RequestParam("tag") String tag,
@@ -360,5 +373,36 @@ public class ExchangeStudentsController {
 			imgrepo.deleteById(tip.get().getImg());
 		}
 		tiprepo.deleteById(tipId);
+	}
+
+	// ********END TIP CALLS********
+
+	// ********BEGIN EVENT CALLS********
+
+	// Get all Events
+	@RequestMapping(value = "/events", method = RequestMethod.GET)
+	public @ResponseBody List<Event> eventsList() {
+		return (List<Event>) eventrepo.findAll();
+	}
+
+	// Add a new Event
+	@PostMapping("/addevent")
+	public @ResponseBody Event newEvent(@RequestBody Event newEvent) {
+		return eventrepo.save(newEvent);
+	}
+
+	// Delete an Event
+	@DeleteMapping("/event/{id}")
+	public @ResponseBody void deleteEvent(@PathVariable("id") Long eventId) {
+		eventrepo.deleteById(eventId);
+	}
+
+	// ********END EVENT CALLS********
+
+	// Get an Image
+	@RequestMapping(value = "/img/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+	public @ResponseBody byte[] getImage(@PathVariable("id") Long imgId) {
+		Optional<Image> img = imgrepo.findById(imgId);
+		return img.get().getData();
 	}
 }

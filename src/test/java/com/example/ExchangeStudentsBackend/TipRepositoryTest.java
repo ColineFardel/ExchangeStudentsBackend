@@ -20,20 +20,36 @@ public class TipRepositoryTest {
 	@Autowired
 	private TipRepository tiprepo;
 
-	// Add a new Tip
+	// Add a new tip with everything
 	@Test
 	public void createTip() {
-		Tip tip = new Tip("Name", "Description", "Tag");
-		tiprepo.save(tip);
-		assertThat(tip.getId()).isNotNull();
+		Tip tipWithImg = new Tip("Name", "Description", "Tag", "Location", (long) 41);
+		tiprepo.save(tipWithImg);
+		assertThat(tipWithImg.getId()).isNotNull();
+	}
 
+	// Add a new tip without image
+	@Test
+	public void createTipWithoutImg() {
 		Tip tipWithLoc = new Tip("Name", "Description", "Tag", "Location");
 		tiprepo.save(tipWithLoc);
 		assertThat(tipWithLoc.getId()).isNotNull();
+	}
 
+	// Add a new tip without location
+	@Test
+	public void createTipWithoutLoc() {
 		Tip tipWithImg = new Tip("Name", "Description", "Tag", (long) 41);
 		tiprepo.save(tipWithImg);
 		assertThat(tipWithImg.getId()).isNotNull();
+	}
+
+	// Add a new tip without image and location
+	@Test
+	public void createTipWithoutImgAndLoc() {
+		Tip tip = new Tip("Name", "Description", "Tag");
+		tiprepo.save(tip);
+		assertThat(tip.getId()).isNotNull();
 	}
 
 	// Delete Tip
