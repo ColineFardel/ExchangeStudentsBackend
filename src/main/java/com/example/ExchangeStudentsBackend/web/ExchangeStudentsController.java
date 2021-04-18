@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +18,7 @@ import com.example.ExchangeStudentsBackend.model.Course;
 import com.example.ExchangeStudentsBackend.model.CourseRepository;
 import com.example.ExchangeStudentsBackend.model.Event;
 import com.example.ExchangeStudentsBackend.model.EventRepository;
+import com.example.ExchangeStudentsBackend.model.EventResponse;
 import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
 import com.example.ExchangeStudentsBackend.model.Image;
@@ -39,28 +38,20 @@ public class ExchangeStudentsController {
 
 	@Autowired
 	private FAQRepository faqrepo;
-
 	@Autowired
 	private ImageRepository imgrepo;
-
 	@Autowired
 	private RequestRepository requestrepo;
-
 	@Autowired
 	private OfferRepository offerrepo;
-
 	@Autowired
 	private ChatRepository chatrepo;
-
 	@Autowired
 	private TopicRepository topicrepo;
-
 	@Autowired
 	private CourseRepository courserepo;
-
 	@Autowired
 	private TipRepository tiprepo;
-
 	@Autowired
 	private EventRepository eventrepo;
 
@@ -383,6 +374,25 @@ public class ExchangeStudentsController {
 	@RequestMapping(value = "/events", method = RequestMethod.GET)
 	public @ResponseBody List<Event> eventsList() {
 		return (List<Event>) eventrepo.findAll();
+	}
+
+	// Get Events with date as title
+	@RequestMapping(value = "/eventsByDate", method = RequestMethod.GET)
+	public @ResponseBody List<EventResponse> eventsByDate() {
+		List<Event> events = (List<Event>) eventrepo.findAll();
+		List<String> temp = new ArrayList<String>();
+		List<EventResponse> eventsWithTitle = new ArrayList<EventResponse>();
+		if (!events.isEmpty()) {
+			for (Event event : events) {
+				if (!temp.contains(event.getDate())) {
+					temp.add(event.getDate());
+				}
+			}
+			for (String date : temp) {
+				eventsWithTitle.add(new EventResponse(date, eventrepo.findByDate(date)));
+			}
+		}
+		return eventsWithTitle;
 	}
 
 	// Add a new Event
