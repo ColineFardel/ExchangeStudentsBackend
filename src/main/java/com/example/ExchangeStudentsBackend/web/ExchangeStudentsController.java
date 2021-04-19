@@ -138,6 +138,20 @@ public class ExchangeStudentsController {
 		requestrepo.deleteById(requestId);
 	}
 
+	// Get all requests' locations
+	@RequestMapping(value = "/requestsloc", method = RequestMethod.GET)
+	public @ResponseBody List<String> requestsLocList() {
+		List<Request> requests = (List<Request>) requestrepo.findAll();
+		List<String> locs = new ArrayList<String>();
+		for (Request request : requests) {
+			String loc = request.getLocation();
+			if (!locs.contains(loc)) {
+				locs.add(loc);
+			}
+		}
+		return locs;
+	}
+
 	// Get all Offers
 	@RequestMapping(value = "/offers", method = RequestMethod.GET)
 	public @ResponseBody List<Offer> offerList() {
@@ -172,6 +186,20 @@ public class ExchangeStudentsController {
 		Optional<Offer> offer = offerrepo.findById(offerId);
 		imgrepo.deleteById(offer.get().getImgId());
 		offerrepo.deleteById(offerId);
+	}
+
+	// Get all offers' locations
+	@RequestMapping(value = "/offersloc", method = RequestMethod.GET)
+	public @ResponseBody List<String> offersLocList() {
+		List<Offer> offers = (List<Offer>) offerrepo.findAll();
+		List<String> locs = new ArrayList<String>();
+		for (Offer offer : offers) {
+			String loc = offer.getLocation();
+			if (!locs.contains(loc)) {
+				locs.add(loc);
+			}
+		}
+		return locs;
 	}
 
 	// ********END MARKET CALLS********
