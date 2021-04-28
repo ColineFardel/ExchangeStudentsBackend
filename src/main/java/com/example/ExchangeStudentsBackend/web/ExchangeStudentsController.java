@@ -6,11 +6,18 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ExchangeStudentsBackend.JwtTokenUtil;
 import com.example.ExchangeStudentsBackend.model.Chat;
 import com.example.ExchangeStudentsBackend.model.ChatRepository;
 import com.example.ExchangeStudentsBackend.model.ChatResponse;
@@ -23,6 +30,8 @@ import com.example.ExchangeStudentsBackend.model.FAQ;
 import com.example.ExchangeStudentsBackend.model.FAQRepository;
 import com.example.ExchangeStudentsBackend.model.Image;
 import com.example.ExchangeStudentsBackend.model.ImageRepository;
+import com.example.ExchangeStudentsBackend.model.JwtRequest;
+import com.example.ExchangeStudentsBackend.model.JwtResponse;
 import com.example.ExchangeStudentsBackend.model.Offer;
 import com.example.ExchangeStudentsBackend.model.OfferRepository;
 import com.example.ExchangeStudentsBackend.model.Request;
@@ -32,6 +41,8 @@ import com.example.ExchangeStudentsBackend.model.TipRepository;
 import com.example.ExchangeStudentsBackend.model.Topic;
 import com.example.ExchangeStudentsBackend.model.TopicRepository;
 import com.example.ExchangeStudentsBackend.model.UniResponse;
+import com.example.ExchangeStudentsBackend.model.User;
+import com.example.ExchangeStudentsBackend.model.UserRepository;
 
 @Controller
 public class ExchangeStudentsController {
@@ -54,6 +65,52 @@ public class ExchangeStudentsController {
 	private TipRepository tiprepo;
 	@Autowired
 	private EventRepository eventrepo;
+	@Autowired
+	private UserRepository userrepo;
+
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	private UserDetailServiceImpl userDetailsService;
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	// ********BEGIN CALLS FOR AUTHENTICATION********
+
+	@RequestMapping(value = "/auth/login", method = RequestMethod.POST)
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+
+		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+
+		final String token = jwtTokenUtil.generateToken(userDetails);
+
+		return ResponseEntity.ok(new JwtResponse(token));
+	}
+
+	private void authenticate(String username, String password) throws Exception {
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		} catch (DisabledException e) {
+			throw new Exception("USER_DISABLED", e);
+		} catch (BadCredentialsException e) {
+			throw new Exception("INVALID_CREDENTIALS", e);
+		}
+	}
+
+	@PostMapping(value = "/auth/signup")
+	public ResponseEntity<?> addUser(@RequestBody User user) {
+		if(userrepo.existsByUsername(user.getUsername())|| userrepo.existsByEmail(user.getEmail())) {
+			return ResponseEntity.badRequest().body("Username or Email already used");
+		}
+		else {
+			userrepo.save(user);
+			return ResponseEntity.ok("Signed up");
+		}
+	}
+
+	// ********END CALLS FOR AUTHENTICATION********
 
 	// ********BEGIN FAQ CALLS********
 
