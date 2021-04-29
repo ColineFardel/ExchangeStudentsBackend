@@ -4,6 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class Offer {
@@ -14,23 +18,42 @@ public class Offer {
 
 	private String name;
 	private String description;
-	private String phoneNumber;
 	private String location;
-	private Long imgId;
+	private long imgId;
 	private double price;
+	@ManyToOne
+	@JsonBackReference(value = "user")
+	@JoinColumn(name = "userId")
+	private User user;
 
 	public Offer() {
 		super();
 	}
 
-	public Offer(String name, String description, String phoneNumber, String location, Long imgId, double price) {
+	public Offer(String name, String description, String location, long imgId, double price, User user) {
 		super();
 		this.name = name;
 		this.description = description;
-		this.phoneNumber = phoneNumber;
 		this.location = location;
 		this.imgId = imgId;
 		this.price = price;
+		this.user = user;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public long getImgId() {
+		return imgId;
+	}
+
+	public void setImgId(long imgId) {
+		this.imgId = imgId;
 	}
 
 	public long getId() {
@@ -57,28 +80,12 @@ public class Offer {
 		this.description = description;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
 	public String getLocation() {
 		return location;
 	}
 
 	public void setLocation(String location) {
 		this.location = location;
-	}
-
-	public Long getImgId() {
-		return imgId;
-	}
-
-	public void setImgId(Long imgId) {
-		this.imgId = imgId;
 	}
 
 	public double getPrice() {

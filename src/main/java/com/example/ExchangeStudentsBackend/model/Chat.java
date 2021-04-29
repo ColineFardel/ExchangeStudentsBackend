@@ -14,6 +14,11 @@ public class Chat {
 	private String time;
 
 	@ManyToOne
+	@JsonBackReference(value = "user")
+	@JoinColumn(name = "userId")
+	private User user;
+
+	@ManyToOne
 	@JsonBackReference(value = "topicChat")
 	@JoinColumn(name = "topicid")
 	private Topic topic;
@@ -27,20 +32,22 @@ public class Chat {
 		super();
 	}
 
-	public Chat(String text, String date, String time, Topic topic) {
+	public Chat(String text, String date, String time, Topic topic, User user) {
 		super();
 		this.text = text;
 		this.date = date;
 		this.time = time;
 		this.topic = topic;
+		this.user = user;
 	}
 
-	public Chat(String text, String date, String time, Course course) {
+	public Chat(String text, String date, String time, Course course, User user) {
 		super();
 		this.text = text;
 		this.date = date;
 		this.time = time;
 		this.course = course;
+		this.user = user;
 	}
 
 	public Course getCourse() {
@@ -89,6 +96,14 @@ public class Chat {
 
 	public void setTopic(Topic topic) {
 		this.topic = topic;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

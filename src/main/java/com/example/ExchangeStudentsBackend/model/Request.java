@@ -4,6 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class Request {
@@ -14,20 +18,28 @@ public class Request {
 
 	private String name;
 	private String description;
-	private String phoneNumber;
 	private String location;
-	private Long imgId;
+	private long imgId;
+	@ManyToOne
+	@JsonBackReference(value = "user")
+	@JoinColumn(name = "userId")
+	private User user;
 
 	public Request() {
 		super();
 	}
 
-	public Request(String name, String description, String phoneNumber, String location, Long imgId) {
+	public Request(String name, String description,String location, long imgId, User user) {
 		super();
 		this.name = name;
 		this.description = description;
-		this.phoneNumber = phoneNumber;
 		this.location = location;
+		this.imgId = imgId;
+		this.user = user;
+	}
+
+
+	public void setImgId(long imgId) {
 		this.imgId = imgId;
 	}
 
@@ -63,20 +75,16 @@ public class Request {
 		this.description = description;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public User getUser() {
+		return user;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public Long getImgId() {
+	public long getImgId() {
 		return imgId;
-	}
-
-	public void setImgId(Long imgId) {
-		this.imgId = imgId;
 	}
 
 }

@@ -16,6 +16,7 @@ import com.example.ExchangeStudentsBackend.model.Course;
 import com.example.ExchangeStudentsBackend.model.CourseRepository;
 import com.example.ExchangeStudentsBackend.model.Topic;
 import com.example.ExchangeStudentsBackend.model.TopicRepository;
+import com.example.ExchangeStudentsBackend.model.User;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -34,7 +35,7 @@ public class ChatRepositoryTest {
 	@Test
 	public void createChat() {
 		List<Topic> topics = (List<Topic>) topicrepo.findAll();
-		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topics.get(0));
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topics.get(0), new User());
 		chatrepo.save(chat);
 		assertThat(chat.getId()).isNotNull();
 	}
@@ -45,7 +46,7 @@ public class ChatRepositoryTest {
 		Topic topic = new Topic("Name");
 		topicrepo.save(topic);
 
-		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topic);
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topic, new User());
 		chatrepo.save(chat);
 
 		List<Chat> chats = chatrepo.findByTopic(topic);
@@ -58,7 +59,7 @@ public class ChatRepositoryTest {
 		Topic topic = new Topic("Name");
 		topicrepo.save(topic);
 
-		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topic);
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", topic, new User());
 		chatrepo.save(chat);
 
 		List<Chat> chats = chatrepo.findByTopicAndDate(topic, "March 20, 2021");
@@ -71,7 +72,7 @@ public class ChatRepositoryTest {
 		Course course = new Course("Name", "Teacher", "University");
 		courserepo.save(course);
 
-		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", course);
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", course, new User());
 		chatrepo.save(chat);
 
 		List<Chat> chats = chatrepo.findByCourse(course);
@@ -84,7 +85,7 @@ public class ChatRepositoryTest {
 		Course course = new Course("Name", "Teacher", "University");
 		courserepo.save(course);
 
-		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", course);
+		Chat chat = new Chat("Test", "March 20, 2021", "2:32 PM", course, new User());
 		chatrepo.save(chat);
 
 		List<Chat> chats = chatrepo.findByCourseAndDate(course, "March 20, 2021");

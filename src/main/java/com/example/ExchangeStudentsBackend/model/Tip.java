@@ -2,6 +2,8 @@ package com.example.ExchangeStudentsBackend.model;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Tip {
 	@Id
@@ -13,44 +15,69 @@ public class Tip {
 	private String tag;
 	private long img;
 
+	@ManyToOne
+	@JsonBackReference(value = "user")
+	@JoinColumn(name = "userId")
+	private User user;
+
 	// Constructor with everything
-	public Tip(String name, String description, String tag, String location, long img) {
+	public Tip(String name, String description, String tag, String location, long imgId, User user) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.location = location;
 		this.tag = tag;
-		this.img = img;
+		this.img = imgId;
+		this.user = user;
 	}
 
 	// Constructor without location and image
-	public Tip(String name, String description, String tag) {
+	public Tip(String name, String description, String tag, User user) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.tag = tag;
+		this.user = user;
 	}
 
 	// Constructor without location
-	public Tip(String name, String description, String tag, long img) {
+	public Tip(String name, String description, String tag, long imgId, User user) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.tag = tag;
-		this.img = img;
+		this.img = imgId;
+		this.user = user;
 	}
 
 	// Constructor without image
-	public Tip(String name, String description, String tag, String location) {
+	public Tip(String name, String description, String tag, String location, User user) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.location = location;
 		this.tag = tag;
+		this.user = user;
 	}
 
 	public Tip() {
 		super();
+	}
+
+	public long getImgId() {
+		return img;
+	}
+
+	public void setImgId(long imgId) {
+		this.img = imgId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public long getId() {
@@ -91,14 +118,6 @@ public class Tip {
 
 	public void setTag(String tag) {
 		this.tag = tag;
-	}
-
-	public long getImg() {
-		return img;
-	}
-
-	public void setImg(long img) {
-		this.img = img;
 	}
 
 }

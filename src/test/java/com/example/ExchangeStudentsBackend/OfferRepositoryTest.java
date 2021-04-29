@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.ExchangeStudentsBackend.model.Offer;
 import com.example.ExchangeStudentsBackend.model.OfferRepository;
+import com.example.ExchangeStudentsBackend.model.User;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -23,7 +24,7 @@ public class OfferRepositoryTest {
 	// Add a new Offer
 	@Test
 	public void createOffer() {
-		Offer offer = new Offer("Kettle", "I'm selling a kettle", "+416662233", "Somewhere", (long) 41, 10.00);
+		Offer offer = new Offer("Kettle", "I'm selling a kettle", "Somewhere", (long) 41, 10.00, new User());
 		offerrepo.save(offer);
 		assertThat(offer.getId()).isNotNull();
 	}

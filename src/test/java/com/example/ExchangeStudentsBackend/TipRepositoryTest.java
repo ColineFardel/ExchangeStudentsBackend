@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.ExchangeStudentsBackend.model.Tip;
 import com.example.ExchangeStudentsBackend.model.TipRepository;
+import com.example.ExchangeStudentsBackend.model.User;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -23,7 +24,7 @@ public class TipRepositoryTest {
 	// Add a new tip with everything
 	@Test
 	public void createTip() {
-		Tip tipWithImg = new Tip("Name", "Description", "Tag", "Location", (long) 41);
+		Tip tipWithImg = new Tip("Name", "Description", "Tag", "Location", (long) 41, new User());
 		tiprepo.save(tipWithImg);
 		assertThat(tipWithImg.getId()).isNotNull();
 	}
@@ -31,7 +32,7 @@ public class TipRepositoryTest {
 	// Add a new tip without image
 	@Test
 	public void createTipWithoutImg() {
-		Tip tipWithLoc = new Tip("Name", "Description", "Tag", "Location");
+		Tip tipWithLoc = new Tip("Name", "Description", "Tag", "Location", new User());
 		tiprepo.save(tipWithLoc);
 		assertThat(tipWithLoc.getId()).isNotNull();
 	}
@@ -39,7 +40,7 @@ public class TipRepositoryTest {
 	// Add a new tip without location
 	@Test
 	public void createTipWithoutLoc() {
-		Tip tipWithImg = new Tip("Name", "Description", "Tag", (long) 41);
+		Tip tipWithImg = new Tip("Name", "Description", "Tag", (long) 41, new User());
 		tiprepo.save(tipWithImg);
 		assertThat(tipWithImg.getId()).isNotNull();
 	}
@@ -47,7 +48,7 @@ public class TipRepositoryTest {
 	// Add a new tip without image and location
 	@Test
 	public void createTipWithoutImgAndLoc() {
-		Tip tip = new Tip("Name", "Description", "Tag");
+		Tip tip = new Tip("Name", "Description", "Tag", new User());
 		tiprepo.save(tip);
 		assertThat(tip.getId()).isNotNull();
 	}

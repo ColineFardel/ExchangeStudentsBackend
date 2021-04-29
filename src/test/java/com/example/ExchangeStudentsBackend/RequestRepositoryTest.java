@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.ExchangeStudentsBackend.model.Request;
 import com.example.ExchangeStudentsBackend.model.RequestRepository;
+import com.example.ExchangeStudentsBackend.model.User;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -23,7 +24,7 @@ public class RequestRepositoryTest {
 	// Add a new Request
 	@Test
 	public void createRequest() {
-		Request request = new Request("Kettle", "I'm looking for a kettle", "+41792223366", "Somewhere", (long) 41);
+		Request request = new Request("Kettle", "I'm looking for a kettle", "Somewhere", (long) 41, new User());
 		requestrepo.save(request);
 		assertThat(request.getId()).isNotNull();
 	}

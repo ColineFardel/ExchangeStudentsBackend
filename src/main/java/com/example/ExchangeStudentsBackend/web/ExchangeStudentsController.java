@@ -7,11 +7,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,7 @@ import com.example.ExchangeStudentsBackend.model.Topic;
 import com.example.ExchangeStudentsBackend.model.TopicRepository;
 import com.example.ExchangeStudentsBackend.model.UniResponse;
 import com.example.ExchangeStudentsBackend.model.User;
+import com.example.ExchangeStudentsBackend.model.UserObjectsResponse;
 import com.example.ExchangeStudentsBackend.model.UserRepository;
 
 @Controller
@@ -101,13 +104,42 @@ public class ExchangeStudentsController {
 
 	@PostMapping(value = "/auth/signup")
 	public ResponseEntity<?> addUser(@RequestBody User user) {
-		if(userrepo.existsByUsername(user.getUsername())|| userrepo.existsByEmail(user.getEmail())) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		if (userrepo.existsByUsername(user.getUsername()) || userrepo.existsByEmail(user.getEmail())) {
 			return ResponseEntity.badRequest().body("Username or Email already used");
-		}
-		else {
+		} else {
+			user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
 			userrepo.save(user);
 			return ResponseEntity.ok("Signed up");
 		}
+	}
+
+	// Get one user
+	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	public @ResponseBody User getUser(@RequestBody String username) {
+		return userrepo.findByUsername(username);
+	}
+
+	// Delete a user
+	// Only for admin users
+	@PreAuthorize("hasAuthority('ADMIN')")
+	@DeleteMapping("/user/{id}")
+	public @ResponseBody void deleteUser(@PathVariable("id") Long userId) {
+		userrepo.deleteById(userId);
+	}
+
+	// Get all user's created objects
+	@RequestMapping(value = "/userObjects", method = RequestMethod.GET)
+	public @ResponseBody UserObjectsResponse getUserObjects(@RequestBody String username) {
+		User user = userrepo.findByUsername(username);
+		return new UserObjectsResponse(user.getEvents(), user.getTips(), user.getOffers(), user.getRequests());
+	}
+
+	// Get user chats
+	@RequestMapping(value = "/userChats", method = RequestMethod.GET)
+	public @ResponseBody List<Chat> getUserChats(@RequestBody String username) {
+		User user = userrepo.findByUsername(username);
+		return user.getChats();
 	}
 
 	// ********END CALLS FOR AUTHENTICATION********
@@ -116,6 +148,7 @@ public class ExchangeStudentsController {
 
 	// Get all FAQs
 	// Only for admin users
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@RequestMapping(value = "/faqs", method = RequestMethod.GET)
 	public @ResponseBody List<FAQ> faqListRest() {
 		return (List<FAQ>) faqrepo.findAll();
@@ -135,6 +168,7 @@ public class ExchangeStudentsController {
 
 	// Modify an FAQ
 	// Only for admin users
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PutMapping("/faq/{id}")
 	public @ResponseBody FAQ faq(@RequestBody FAQ newFaq, @PathVariable("id") Long faqId) {
 		return faqrepo.findById(faqId).map(faq -> {
@@ -150,6 +184,7 @@ public class ExchangeStudentsController {
 
 	// Delete an FAQ
 	// Only for admin users
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@DeleteMapping("/faq/{id}")
 	public @ResponseBody void deleteFaq(@PathVariable("id") Long faqId) {
 		faqrepo.deleteById(faqId);
@@ -168,8 +203,8 @@ public class ExchangeStudentsController {
 	// Add a new Request
 	@PostMapping("/addrequest")
 	public @ResponseBody Request newRequest(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
-			@RequestParam("desc") String desc, @RequestParam("phoneNumber") String phoneNumber,
-			@RequestParam("location") String location) {
+			@RequestParam("desc") String desc, @RequestParam("location") String location,
+			@RequestParam("user") User user) {
 
 		try {
 			Image img = new Image();
@@ -179,7 +214,7 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			Request newRequest = new Request(name, desc, phoneNumber, location, savedImg.getId());
+			Request newRequest = new Request(name, desc, location, savedImg.getId(), user);
 			return requestrepo.save(newRequest);
 
 		} catch (Exception e) {
@@ -218,8 +253,8 @@ public class ExchangeStudentsController {
 	// Add a new Offer
 	@PostMapping("/addoffer")
 	public @ResponseBody Offer newOffer(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
-			@RequestParam("desc") String desc, @RequestParam("phoneNumber") String phoneNumber,
-			@RequestParam("location") String location, double price) {
+			@RequestParam("desc") String desc, @RequestParam("location") String location, double price,
+			@RequestParam("user") User user) {
 
 		try {
 			Image img = new Image();
@@ -229,7 +264,7 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			Offer newOffer = new Offer(name, desc, phoneNumber, location, savedImg.getId(), price);
+			Offer newOffer = new Offer(name, desc, location, savedImg.getId(), price, user);
 			return offerrepo.save(newOffer);
 
 		} catch (Exception e) {
@@ -411,7 +446,7 @@ public class ExchangeStudentsController {
 	@PostMapping("/addtipwithimg")
 	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
 			@RequestParam("desc") String desc, @RequestParam("tag") String tag,
-			@RequestParam("location") String location) {
+			@RequestParam("location") String location, @RequestParam("user") User user) {
 
 		try {
 			Image img = new Image();
@@ -423,9 +458,9 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 			if (location.isEmpty()) {
-				newTip = new Tip(name, desc, tag, savedImg.getId());
+				newTip = new Tip(name, desc, tag, savedImg.getId(), user);
 			} else {
-				newTip = new Tip(name, desc, tag, location, savedImg.getId());
+				newTip = new Tip(name, desc, tag, location, savedImg.getId(), user);
 			}
 
 			return tiprepo.save(newTip);
@@ -445,8 +480,8 @@ public class ExchangeStudentsController {
 	@DeleteMapping("/tip/{id}")
 	public @ResponseBody void deleteTip(@PathVariable("id") Long tipId) {
 		Optional<Tip> tip = tiprepo.findById(tipId);
-		if (tip.get().getImg() > 0) {
-			imgrepo.deleteById(tip.get().getImg());
+		if (tip.get().getImgId() > 0) {
+			imgrepo.deleteById(tip.get().getImgId());
 		}
 		tiprepo.deleteById(tipId);
 	}

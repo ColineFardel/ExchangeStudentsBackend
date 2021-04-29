@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.example.ExchangeStudentsBackend.model.Event;
 import com.example.ExchangeStudentsBackend.model.EventRepository;
+import com.example.ExchangeStudentsBackend.model.User;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -23,7 +24,7 @@ public class EventRepositoryTest {
 	// Add a new event
 	@Test
 	public void createEvent() {
-		Event event = new Event("Name", "Description", "Location", "Date", "Time", "User name");
+		Event event = new Event("Name", "Description", "Location", "Date", "Time", new User());
 		eventrepo.save(event);
 		assertThat(event.getId()).isNotNull();
 	}
@@ -42,7 +43,7 @@ public class EventRepositoryTest {
 	// Search event by date
 	@Test
 	public void findEventsByDate() {
-		Event event = new Event("Name", "Description", "Location", "Date", "Time", "User name");
+		Event event = new Event("Name", "Description", "Location", "Date", "Time", new User());
 		eventrepo.save(event);
 
 		List<Event> events = eventrepo.findByDate("Date");

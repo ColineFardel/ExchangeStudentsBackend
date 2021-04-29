@@ -2,6 +2,8 @@ package com.example.ExchangeStudentsBackend.model;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Event {
 
@@ -13,20 +15,31 @@ public class Event {
 	private String location;
 	private String date;
 	private String time;
-	private String userName;
+	@ManyToOne
+	@JsonBackReference(value = "user")
+	@JoinColumn(name = "userId")
+	private User user;
 
-	public Event(String name, String description, String location, String date, String time, String userName) {
+	public Event(String name, String description, String location, String date, String time, User user) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.location = location;
 		this.date = date;
 		this.time = time;
-		this.userName = userName;
+		this.user = user;
 	}
 
 	public Event() {
 		super();
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public long getId() {
@@ -75,14 +88,6 @@ public class Event {
 
 	public void setTime(String time) {
 		this.time = time;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 }
