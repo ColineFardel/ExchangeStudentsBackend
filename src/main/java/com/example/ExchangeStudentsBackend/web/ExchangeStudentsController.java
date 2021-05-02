@@ -115,8 +115,8 @@ public class ExchangeStudentsController {
 	}
 
 	// Get one user
-	@PostMapping(value = "/user")
-	public User getUser(@RequestBody String username) {
+	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	public @ResponseBody User getUser(@RequestBody String username) {
 		return userrepo.findByUsername(username);
 	}
 
