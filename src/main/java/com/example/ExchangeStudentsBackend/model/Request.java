@@ -7,9 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 public class Request {
 
@@ -29,7 +26,7 @@ public class Request {
 		super();
 	}
 
-	public Request(String name, String description,String location, long imgId, User user) {
+	public Request(String name, String description, String location, long imgId, User user) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -37,7 +34,6 @@ public class Request {
 		this.imgId = imgId;
 		this.user = user;
 	}
-
 
 	public void setImgId(long imgId) {
 		this.imgId = imgId;

@@ -7,9 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 public class Offer {
 
@@ -22,7 +19,7 @@ public class Offer {
 	private String location;
 	private long imgId;
 	private double price;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private User user;

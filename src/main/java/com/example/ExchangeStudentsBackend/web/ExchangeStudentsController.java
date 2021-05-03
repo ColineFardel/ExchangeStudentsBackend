@@ -131,15 +131,15 @@ public class ExchangeStudentsController {
 
 	// Get all user's created objects
 	@RequestMapping(value = "/userObjects", method = RequestMethod.GET)
-	public @ResponseBody UserObjectsResponse getUserObjects(@RequestBody String username) {
-		User user = userrepo.findByUsername(username);
+	public @ResponseBody UserObjectsResponse getUserObjects(@RequestBody User currentUser) {
+		User user = userrepo.findByUsername(currentUser.getUsername());
 		return new UserObjectsResponse(user.getEvents(), user.getTips(), user.getOffers(), user.getRequests());
 	}
 
 	// Get user chats
 	@RequestMapping(value = "/userChats", method = RequestMethod.GET)
-	public @ResponseBody List<Chat> getUserChats(@RequestBody String username) {
-		User user = userrepo.findByUsername(username);
+	public @ResponseBody List<Chat> getUserChats(@RequestBody User currentUser) {
+		User user = userrepo.findByUsername(currentUser.getUsername());
 		return user.getChats();
 	}
 
@@ -215,7 +215,7 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			Request newRequest = new Request(name, desc, location, savedImg.getId(),  userrepo.findById(userId).get());
+			Request newRequest = new Request(name, desc, location, savedImg.getId(), userrepo.findById(userId).get());
 			return requestrepo.save(newRequest);
 
 		} catch (Exception e) {
@@ -265,7 +265,7 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			Offer newOffer = new Offer(name, desc, location, savedImg.getId(), price,  userrepo.findById(userId).get());
+			Offer newOffer = new Offer(name, desc, location, savedImg.getId(), price, userrepo.findById(userId).get());
 			return offerrepo.save(newOffer);
 
 		} catch (Exception e) {
@@ -463,7 +463,7 @@ public class ExchangeStudentsController {
 			if (location.isEmpty()) {
 				newTip = new Tip(name, desc, tag, savedImg.getId(), userrepo.findById(userId).get());
 			} else {
-				newTip = new Tip(name, desc, tag, location, savedImg.getId(),  userrepo.findById(userId).get());
+				newTip = new Tip(name, desc, tag, location, savedImg.getId(), userrepo.findById(userId).get());
 			}
 
 			return tiprepo.save(newTip);
