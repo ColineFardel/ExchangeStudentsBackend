@@ -205,7 +205,7 @@ public class ExchangeStudentsController {
 	@PostMapping("/addrequest")
 	public @ResponseBody Request newRequest(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
 			@RequestParam("desc") String desc, @RequestParam("location") String location,
-			@RequestParam("user") User user) {
+			@RequestParam("userId") long userId) {
 
 		try {
 			Image img = new Image();
@@ -215,7 +215,7 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			Request newRequest = new Request(name, desc, location, savedImg.getId(), user);
+			Request newRequest = new Request(name, desc, location, savedImg.getId(),  userrepo.findById(userId).get());
 			return requestrepo.save(newRequest);
 
 		} catch (Exception e) {
@@ -255,7 +255,7 @@ public class ExchangeStudentsController {
 	@PostMapping("/addoffer")
 	public @ResponseBody Offer newOffer(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
 			@RequestParam("desc") String desc, @RequestParam("location") String location, double price,
-			@RequestParam("user") User user) {
+			@RequestParam("userId") long userId) {
 
 		try {
 			Image img = new Image();
@@ -265,7 +265,7 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 
-			Offer newOffer = new Offer(name, desc, location, savedImg.getId(), price, user);
+			Offer newOffer = new Offer(name, desc, location, savedImg.getId(), price,  userrepo.findById(userId).get());
 			return offerrepo.save(newOffer);
 
 		} catch (Exception e) {
@@ -449,7 +449,7 @@ public class ExchangeStudentsController {
 	@PostMapping("/addtipwithimg")
 	public @ResponseBody Tip newTip(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
 			@RequestParam("desc") String desc, @RequestParam("tag") String tag,
-			@RequestParam("location") String location, @RequestParam("user") User user) {
+			@RequestParam("location") String location, @RequestParam("userId") long userId) {
 
 		try {
 			Image img = new Image();
@@ -461,9 +461,9 @@ public class ExchangeStudentsController {
 
 			Image savedImg = imgrepo.save(img);
 			if (location.isEmpty()) {
-				newTip = new Tip(name, desc, tag, savedImg.getId(), user);
+				newTip = new Tip(name, desc, tag, savedImg.getId(), userrepo.findById(userId).get());
 			} else {
-				newTip = new Tip(name, desc, tag, location, savedImg.getId(), user);
+				newTip = new Tip(name, desc, tag, location, savedImg.getId(),  userrepo.findById(userId).get());
 			}
 
 			return tiprepo.save(newTip);
