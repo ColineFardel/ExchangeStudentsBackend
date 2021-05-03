@@ -130,14 +130,14 @@ public class ExchangeStudentsController {
 	}
 
 	// Get all user's created objects
-	@RequestMapping(value = "/userObjects", method = RequestMethod.GET)
+	@RequestMapping(value = "/userObjects", method = RequestMethod.POST)
 	public @ResponseBody UserObjectsResponse getUserObjects(@RequestBody User currentUser) {
 		User user = userrepo.findByUsername(currentUser.getUsername());
 		return new UserObjectsResponse(user.getEvents(), user.getTips(), user.getOffers(), user.getRequests());
 	}
 
 	// Get user chats
-	@RequestMapping(value = "/userChats", method = RequestMethod.GET)
+	@RequestMapping(value = "/userChats", method = RequestMethod.POST)
 	public @ResponseBody List<Chat> getUserChats(@RequestBody User currentUser) {
 		User user = userrepo.findByUsername(currentUser.getUsername());
 		return user.getChats();
