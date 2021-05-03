@@ -17,7 +17,6 @@ public class Tip {
 	private long img;
 
 	@ManyToOne
-	@JsonManagedReference(value = "user")
 	@JoinColumn(name = "userId")
 	private User user;
 

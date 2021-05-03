@@ -15,7 +15,6 @@ public class Chat {
 	private String time;
 
 	@ManyToOne
-	@JsonManagedReference(value = "user")
 	@JoinColumn(name = "userId")
 	private User user;
 

@@ -33,23 +33,23 @@ public class User {
 	private String phoneNumber;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference(value = "userChat")
 	private List<Chat> chats;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference(value = "userEvent")
 	private List<Event> events;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference(value = "userOffer")
 	private List<Offer> offers;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference(value = "userRequest")
 	private List<Request> requests;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference(value = "userTip")
 	private List<Tip> tips;
 
 	public User(String username, String email, String passwordHash, String role, String phoneNumber) {

@@ -24,7 +24,6 @@ public class Offer {
 	private double price;
 	
 	@ManyToOne
-	@JsonManagedReference(value = "user")
 	@JoinColumn(name = "userId")
 	private User user;
 

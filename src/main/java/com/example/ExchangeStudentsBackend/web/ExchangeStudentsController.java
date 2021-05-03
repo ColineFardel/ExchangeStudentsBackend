@@ -117,7 +117,6 @@ public class ExchangeStudentsController {
 	// Get one user
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public @ResponseBody User getUser(@RequestBody User user) {
-		//username = username.substring(1, username.length() - 1);
 		User userResponse = userrepo.findByUsername(user.getUsername());
 		return userResponse;
 	}
@@ -522,6 +521,8 @@ public class ExchangeStudentsController {
 	// Add a new Event
 	@PostMapping("/addevent")
 	public @ResponseBody Event newEvent(@RequestBody Event newEvent) {
+		User user = userrepo.findByUsername(newEvent.getUser().getUsername());
+		newEvent.setUser(user);
 		return eventrepo.save(newEvent);
 	}
 

@@ -16,7 +16,6 @@ public class Event {
 	private String date;
 	private String time;
 	@ManyToOne
-	@JsonManagedReference(value = "user")
 	@JoinColumn(name = "userId")
 	private User user;
 

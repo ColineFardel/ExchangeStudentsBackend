@@ -22,7 +22,6 @@ public class Request {
 	private String location;
 	private long imgId;
 	@ManyToOne
-	@JsonManagedReference(value = "user")
 	@JoinColumn(name = "userId")
 	private User user;
 
