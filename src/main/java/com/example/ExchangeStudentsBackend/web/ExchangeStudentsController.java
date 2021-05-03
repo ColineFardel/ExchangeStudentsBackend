@@ -117,7 +117,9 @@ public class ExchangeStudentsController {
 	// Get one user
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public @ResponseBody User getUser(@RequestBody String username) {
-		return userrepo.findByUsername(username);
+		username = username.substring(1, username.length() - 1);
+		User user = userrepo.findByUsername(username);
+		return user;
 	}
 
 	// Delete a user
