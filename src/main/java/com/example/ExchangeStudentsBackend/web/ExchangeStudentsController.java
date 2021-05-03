@@ -314,6 +314,7 @@ public class ExchangeStudentsController {
 
 	// Delete a Topic
 	// Only for admin
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@DeleteMapping("/topic/{id}")
 	public @ResponseBody void deleteTopic(@PathVariable("id") Long topicId) {
 		topicrepo.deleteById(topicId);
@@ -399,6 +400,7 @@ public class ExchangeStudentsController {
 
 	// Delete a Course
 	// Only for admin
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@DeleteMapping("/course/{id}")
 	public @ResponseBody void deleteCourse(@PathVariable("id") Long courseId) {
 		courserepo.deleteById(courseId);

@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "usertable")
@@ -31,23 +33,23 @@ public class User {
 	private String phoneNumber;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	private List<Chat> chats;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	private List<Event> events;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	private List<Offer> offers;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	private List<Request> requests;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	private List<Tip> tips;
 
 	public User(String username, String email, String passwordHash, String role, String phoneNumber) {

@@ -2,6 +2,7 @@ package com.example.ExchangeStudentsBackend.model;
 
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Chat {
@@ -14,7 +15,7 @@ public class Chat {
 	private String time;
 
 	@ManyToOne
-	@JsonBackReference(value = "user")
+	@JsonManagedReference(value = "user")
 	@JoinColumn(name = "userId")
 	private User user;
 
